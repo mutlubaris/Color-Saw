@@ -4,24 +4,26 @@ using UnityEngine.SceneManagement;
 
 public class LevelTracker : MonoBehaviour
 {
+    int _sceneIndex;
+    int _levels;
+    
     private void Start() 
     {
         transform.GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).gameObject.SetActive(false);
+
+        _sceneIndex = SceneManager.GetActiveScene().buildIndex;
+        _levels = SceneManager.sceneCountInBuildSettings;
     }
     
     public IEnumerator LoadNextScene()
     {
         yield return new WaitForSeconds(1f);
-        try
+        if (_sceneIndex != _levels - 1)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
-        catch
-        {
-            Debug.Log("You Won!");
-        }
-        finally
+        else
         {
             transform.GetChild(1).gameObject.SetActive(true);
         }
