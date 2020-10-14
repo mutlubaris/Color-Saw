@@ -10,11 +10,13 @@ public class OscillationCutter : MonoBehaviour
     float _movementFactor;
     Vector3 _startingPos;
 
-    private void Start() {
+    private void Start() 
+    {
         _startingPos = transform.position;
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate() 
+    {
         if (_period <= Mathf.Epsilon) return;
         float cycles = Time.time / _period;
 

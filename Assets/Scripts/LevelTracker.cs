@@ -19,6 +19,7 @@ public class LevelTracker : MonoBehaviour
     public IEnumerator LoadNextScene()
     {
         yield return new WaitForSeconds(1f);
+        
         if (_sceneIndex != _levels - 1)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);

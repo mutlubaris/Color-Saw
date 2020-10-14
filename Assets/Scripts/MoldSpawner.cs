@@ -5,7 +5,7 @@ public class MoldSpawner : MonoBehaviour
 {
     [SerializeField] List<GameObject> _molds = null;
 
-    int _moldIndex = 0;
+    private int _moldIndex = 0;
 
     public int moldIndex { get { return _moldIndex; } }
     public int molds { get { return _molds.Count; } }

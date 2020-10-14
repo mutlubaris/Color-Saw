@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class DestructionEffect : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(DestroyEffect());

@@ -2,21 +2,22 @@
 
 public class MoldMovement : MonoBehaviour
 {
-    [SerializeField] int _xPosMax = 12;
-    [SerializeField] int _xPosMin = -12;
-    [SerializeField] int _zPosMax = 30;
-    [SerializeField] int _zPosMin = -22;
-    
     private Vector3 _landPosition;
     private Vector3[] _route;
 
-    private int[] _speed;
+    private int _xPosMax = 12;
+    private int _xPosMin = -12;
+    private int _zPosMax = 20;
+    private int _zPosMin = -20;
+
     private int _verticalSpeed = 5;
     private int _horizontalSpeed = 20;
-    private int _routeIndex;
+    private int[] _speed;
 
+    private int _routeIndex;
     private int _extraBlocks;
-    private bool _movementStarted;
+
+    private bool _cuttingComplete;
 
     public bool shouldNotMove;
     
@@ -40,43 +41,24 @@ public class MoldMovement : MonoBehaviour
     {
         if (!shouldNotMove)
         {
-            if (!_movementStarted)
+            if (!_cuttingComplete)
             {
-                if (Input.GetKeyDown("w"))
-                    transform.position += Vector3.forward;
-                if (Input.GetKeyDown("s"))
-                    transform.position -= Vector3.forward;
-                if (Input.GetKeyDown("d"))
-                    transform.position += Vector3.right;
-                if (Input.GetKeyDown("a"))
-                    transform.position -= Vector3.right;
-
-                Vector3 moldPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-                moldPosition.x = Mathf.Clamp(moldPosition.x, _xPosMin, _xPosMax);
-                moldPosition.z = Mathf.Clamp(moldPosition.z, _zPosMin, _zPosMax);
-                transform.position = moldPosition;
+                MoveMold();
             }
 
             _extraBlocks = FindObjectsOfType<ExtraBlock>().Length;
             if (_extraBlocks == 0)
             {
-                if (!_movementStarted)
-                {
-                    _route[0] = transform.position;
-                    _route[0].y += 3f;
-                    _movementStarted = true;
-                    var colliders = this.GetComponentsInChildren<Collider>();
-                    foreach (var collider in colliders)
-                    {
-                        collider.enabled = false;
-                    }
-                }
+                if (!_cuttingComplete)
+                    PrepareForAnimation();
                 else
                 {
-                    transform.position = Vector3.MoveTowards(transform.position, _route[_routeIndex], _speed[_routeIndex] * Time.deltaTime);
+                    AnimateMold();
+
                     if (transform.position == _route[_routeIndex])
                     {
-                        if (_routeIndex < 2) _routeIndex++;
+                        if (_routeIndex < 2)
+                            _routeIndex++;
                         else
                         {
                             shouldNotMove = true;
@@ -86,5 +68,41 @@ public class MoldMovement : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void AnimateMold()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, _route[_routeIndex], _speed[_routeIndex] * Time.deltaTime);
+    }
+
+    private void PrepareForAnimation()
+    {
+        _route[0] = transform.position;
+        _route[0].y += 3f;
+
+        var colliders = this.GetComponentsInChildren<Collider>();
+        foreach (var collider in colliders)
+        {
+            collider.enabled = false;
+        }
+
+        _cuttingComplete = true;
+    }
+
+    private void MoveMold()
+    {
+        if (Input.GetKeyDown("w"))
+            transform.position += Vector3.forward;
+        if (Input.GetKeyDown("s"))
+            transform.position -= Vector3.forward;
+        if (Input.GetKeyDown("d"))
+            transform.position += Vector3.right;
+        if (Input.GetKeyDown("a"))
+            transform.position -= Vector3.right;
+
+        Vector3 moldPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        moldPosition.x = Mathf.Clamp(moldPosition.x, _xPosMin, _xPosMax);
+        moldPosition.z = Mathf.Clamp(moldPosition.z, _zPosMin, _zPosMax);
+        transform.position = moldPosition;
     }
 }

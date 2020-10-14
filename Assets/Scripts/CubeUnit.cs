@@ -3,6 +3,7 @@
 public class CubeUnit : MonoBehaviour
 {
     [SerializeField] ParticleSystem _destructionEffect = null;
+    
     Color _startingColor;
     
     private void Start() 
@@ -13,7 +14,7 @@ public class CubeUnit : MonoBehaviour
     private void OnTriggerEnter(Collider other) 
     {
         if (other.tag == "Warning")
-            GetComponent<Renderer>().material.color = (_startingColor + Color.white) / 2;
+            ChangeColor();
 
         if (other.tag == "Cutter")
             DestroyBlock();
@@ -36,6 +37,16 @@ public class CubeUnit : MonoBehaviour
     private void OnTriggerExit(Collider other) 
     {
         if (other.tag == "Warning")
-            GetComponent<Renderer>().material.color = _startingColor;
+            RevertColor();
+    }
+
+    private void ChangeColor()
+    {
+        GetComponent<Renderer>().material.color = (_startingColor + Color.white) / 2;
+    }
+
+    private void RevertColor()
+    {
+        GetComponent<Renderer>().material.color = _startingColor;
     }
 }
